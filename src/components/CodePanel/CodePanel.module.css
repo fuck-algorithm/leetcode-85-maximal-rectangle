@@ -1,0 +1,94 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  background: var(--code-bg);
+  border-radius: 8px;
+  overflow: hidden;
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #21252b;
+  border-bottom: 1px solid #181a1f;
+}
+
+.title {
+  font-size: 13px;
+  color: #abb2bf;
+  font-weight: 500;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.tab {
+  padding: 4px 10px;
+  background: transparent;
+  color: #6b7280;
+  border-radius: 4px;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  color: #abb2bf;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tab.active {
+  color: #61afef;
+  background: rgba(97, 175, 239, 0.1);
+}
+
+.codeWrapper {
+  flex: 1;
+  overflow: auto;
+}
+
+.pre {
+  margin: 0;
+  padding: 12px 0;
+  font-family: 'Consolas', 'Monaco', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 100%;
+}
+
+.line {
+  display: flex;
+  padding: 0 12px;
+  transition: background 0.15s;
+}
+
+.line.highlighted {
+  background: rgba(255, 213, 79, 0.15);
+  border-left: 3px solid #ffd54f;
+  padding-left: 9px;
+}
+
+.lineNumber {
+  width: 32px;
+  flex-shrink: 0;
+  color: #4b5263;
+  text-align: right;
+  padding-right: 12px;
+  user-select: none;
+}
+
+.lineContent {
+  flex: 1;
+  white-space: pre;
+}
+
+.lineVars {
+  margin-left: 16px;
+  color: #7c8594;
+  font-style: italic;
+  white-space: nowrap;
+}

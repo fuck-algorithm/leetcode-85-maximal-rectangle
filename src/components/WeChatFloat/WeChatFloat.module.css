@@ -1,0 +1,73 @@
+.container {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 1000;
+}
+
+.floatBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: #07c160;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(7, 193, 96, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.floatBtn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(7, 193, 96, 0.5);
+}
+
+.label {
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.qrPanel {
+  position: absolute;
+  right: 0;
+  bottom: 70px;
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.qrTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+  margin-bottom: 4px;
+}
+
+.qrSubtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.qrImage {
+  width: 180px;
+  height: auto;
+  border-radius: 8px;
+}

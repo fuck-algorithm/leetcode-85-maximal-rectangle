@@ -1,0 +1,165 @@
+.container {
+  background: var(--card-bg);
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.description {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.stepNum {
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: #f5f5f5;
+  padding: 2px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.stepText {
+  font-size: 13px;
+  color: var(--text-color);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #f5f5f5;
+  color: var(--text-color);
+  border-radius: 6px;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.btn:hover:not(:disabled) {
+  background: #e8e8e8;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn kbd {
+  font-size: 10px;
+  padding: 2px 4px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  font-family: inherit;
+}
+
+.playBtn {
+  background: var(--primary-color);
+  color: white;
+}
+
+.playBtn:hover {
+  background: #40a9ff;
+}
+
+.playBtn kbd {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.speedControl {
+  position: relative;
+  margin-left: auto;
+}
+
+.speedBtn {
+  padding: 8px 12px;
+  background: #f5f5f5;
+  color: var(--text-color);
+  border-radius: 6px;
+  font-size: 13px;
+  transition: background 0.2s;
+}
+
+.speedBtn:hover {
+  background: #e8e8e8;
+}
+
+.speedMenu {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  margin-bottom: 4px;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  z-index: 100;
+}
+
+.speedOption {
+  display: block;
+  width: 100%;
+  padding: 8px 16px;
+  background: transparent;
+  color: var(--text-color);
+  font-size: 13px;
+  text-align: left;
+  transition: background 0.2s;
+}
+
+.speedOption:hover {
+  background: #f5f5f5;
+}
+
+.speedOption.active {
+  background: #e6f7ff;
+  color: var(--primary-color);
+}
+
+.progressBar {
+  position: relative;
+  height: 8px;
+  background: #e8e8e8;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.progressFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--success-color);
+  border-radius: 4px;
+  transition: width 0.1s;
+}
+
+.progressHandle {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border: 2px solid var(--success-color);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.progressHandle:active {
+  cursor: grabbing;
+}

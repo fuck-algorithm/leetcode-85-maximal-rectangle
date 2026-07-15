@@ -1,0 +1,29 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  min-height: 0;
+}
+
+.leftPanel {
+  width: 380px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.rightPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
