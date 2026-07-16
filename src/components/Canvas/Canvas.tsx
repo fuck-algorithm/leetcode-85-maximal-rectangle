@@ -1,6 +1,8 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import * as d3 from 'd3';
 import { AlgorithmStep } from '../../types';
+import { StackVisualization } from './StackVisualization';
+import { AnnotationsLayer } from './AnnotationsLayer';
 import styles from './Canvas.module.css';
 
 interface CanvasProps {
@@ -60,7 +62,7 @@ export function Canvas({ heights, currentStep }: CanvasProps) {
   const resetView = useCallback(() => {
     const svg = svgRef.current;
     if (!svg) return;
-    
+
     d3.select(svg)
       .transition()
       .duration(300)
@@ -75,38 +77,43 @@ export function Canvas({ heights, currentStep }: CanvasProps) {
   const margin = { top: 60, right: 40, bottom: 120, left: 40 };
   const chartWidth = dimensions.width - margin.left - margin.right;
   const chartHeight = dimensions.height - margin.top - margin.bottom;
-  
+
   const maxHeight = Math.max(...heights, 1);
   const barWidth = Math.min(60, (chartWidth - (heights.length - 1) * 4) / heights.length);
   const totalBarsWidth = heights.length * barWidth + (heights.length - 1) * 4;
   const startX = (chartWidth - totalBarsWidth) / 2;
-  
+
   const yScale = d3.scaleLinear()
     .domain([0, maxHeight])
     .range([chartHeight, 0]);
 
+  // 柱子中心 x 坐标（供指针与标注复用）
+  const barCenterX = (barIndex: number) => startX + barIndex * (barWidth + 4) + barWidth / 2;
+
   // 获取柱子颜色
   const getBarColor = (index: number): string => {
     if (!currentStep) return '#1890ff';
-    
+
     if (currentStep.highlightRect) {
       const { left, right } = currentStep.highlightRect;
       if (index >= left && index <= right) {
         return '#52c41a';
       }
     }
-    
+
     if (currentStep.highlightBars.includes(index)) {
       return '#faad14';
     }
-    
-    // 栈中的元素
+
     if (currentStep.stack.some(s => s.index === index)) {
       return '#1890ff';
     }
-    
+
     return '#91caff';
   };
+
+  // 箭头标注的主色（用于 marker，取第一个 arrow 的颜色，否则默认灰）
+  const arrowColor = currentStep?.annotations.find(a => a.type === 'arrow')?.color || '#666';
 
   return (
     <div className={styles.container} ref={containerRef}>
@@ -116,13 +123,18 @@ export function Canvas({ heights, currentStep }: CanvasProps) {
         </button>
         <span className={styles.hint}>拖拽平移 · 滚轮缩放</span>
       </div>
-      
+
       <svg
         ref={svgRef}
         width={dimensions.width}
         height={dimensions.height}
         className={styles.svg}
       >
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill={arrowColor} />
+          </marker>
+        </defs>
         <g transform={`translate(${transform.x + margin.left}, ${transform.y + margin.top}) scale(${transform.scale})`}>
           {/* 柱状图 */}
           {heights.map((height, index) => {
@@ -130,10 +142,9 @@ export function Canvas({ heights, currentStep }: CanvasProps) {
             const y = yScale(height);
             const barHeight = chartHeight - y;
             const color = getBarColor(index);
-            
+
             return (
               <g key={index}>
-                {/* 柱子 */}
                 <rect
                   x={x}
                   y={y}
@@ -144,58 +155,18 @@ export function Canvas({ heights, currentStep }: CanvasProps) {
                   strokeWidth={1}
                   rx={2}
                 />
-                
-                {/* 高度标签 */}
-                <text
-                  x={x + barWidth / 2}
-                  y={y - 8}
-                  textAnchor="middle"
-                  fontSize={12}
-                  fill="#333"
-                >
-                  {height}
-                </text>
-                
-                {/* 索引标签 */}
-                <text
-                  x={x + barWidth / 2}
-                  y={chartHeight + 20}
-                  textAnchor="middle"
-                  fontSize={11}
-                  fill="#666"
-                >
-                  {index}
-                </text>
-                
-                {/* 左边界标签 */}
+                <text x={x + barWidth / 2} y={y - 8} textAnchor="middle" fontSize={12} fill="#333">{height}</text>
+                <text x={x + barWidth / 2} y={chartHeight + 20} textAnchor="middle" fontSize={11} fill="#666">{index}</text>
                 {currentStep && currentStep.leftBoundary[index] !== undefined && (
-                  <text
-                    x={x + barWidth / 2}
-                    y={chartHeight + 36}
-                    textAnchor="middle"
-                    fontSize={10}
-                    fill="#faad14"
-                  >
-                    L:{currentStep.leftBoundary[index]}
-                  </text>
+                  <text x={x + barWidth / 2} y={chartHeight + 36} textAnchor="middle" fontSize={10} fill="#faad14">L:{currentStep.leftBoundary[index]}</text>
                 )}
-                
-                {/* 右边界标签 */}
                 {currentStep && currentStep.rightBoundary[index] !== undefined && currentStep.rightBoundary[index] !== heights.length && (
-                  <text
-                    x={x + barWidth / 2}
-                    y={chartHeight + 50}
-                    textAnchor="middle"
-                    fontSize={10}
-                    fill="#52c41a"
-                  >
-                    R:{currentStep.rightBoundary[index]}
-                  </text>
+                  <text x={x + barWidth / 2} y={chartHeight + 50} textAnchor="middle" fontSize={10} fill="#52c41a">R:{currentStep.rightBoundary[index]}</text>
                 )}
               </g>
             );
           })}
-          
+
           {/* 高亮矩形区域 */}
           {currentStep?.highlightRect && (
             <rect
@@ -209,46 +180,31 @@ export function Canvas({ heights, currentStep }: CanvasProps) {
               strokeDasharray="4,2"
             />
           )}
-          
+
           {/* 当前指针 */}
           {currentStep && currentStep.currentIndex >= 0 && currentStep.currentIndex < heights.length && (
             <g>
               <polygon
-                points={`${startX + currentStep.currentIndex * (barWidth + 4) + barWidth / 2 - 8},${chartHeight + 65} ${startX + currentStep.currentIndex * (barWidth + 4) + barWidth / 2 + 8},${chartHeight + 65} ${startX + currentStep.currentIndex * (barWidth + 4) + barWidth / 2},${chartHeight + 55}`}
+                points={`${barCenterX(currentStep.currentIndex) - 8},${chartHeight + 65} ${barCenterX(currentStep.currentIndex) + 8},${chartHeight + 65} ${barCenterX(currentStep.currentIndex)},${chartHeight + 55}`}
                 fill="#ff4d4f"
               />
-              <text
-                x={startX + currentStep.currentIndex * (barWidth + 4) + barWidth / 2}
-                y={chartHeight + 80}
-                textAnchor="middle"
-                fontSize={11}
-                fill="#ff4d4f"
-                fontWeight="bold"
-              >
-                i
-              </text>
+              <text x={barCenterX(currentStep.currentIndex)} y={chartHeight + 80} textAnchor="middle" fontSize={11} fill="#ff4d4f" fontWeight="bold">i</text>
             </g>
+          )}
+
+          {/* 标注层：带方向的箭头、示意线、文字 */}
+          {currentStep && (
+            <AnnotationsLayer
+              annotations={currentStep.annotations}
+              toY={(h) => yScale(h)}
+              barCenterX={barCenterX}
+            />
           )}
         </g>
       </svg>
-      
-      {/* 单调栈可视化 */}
-      {currentStep && currentStep.stack.length > 0 && (
-        <div className={styles.stackPanel}>
-          <div className={styles.stackTitle}>单调栈</div>
-          <div className={styles.stackContent}>
-            {currentStep.stack.map((item, idx) => (
-              <div key={idx} className={styles.stackItem}>
-                <span className={styles.stackIndex}>{item.index}</span>
-                <span className={styles.stackHeight}>h:{item.height}</span>
-              </div>
-            ))}
-          </div>
-          <div className={styles.stackBottom}>栈底</div>
-        </div>
-      )}
-      
-      {/* 当前面积显示 */}
+
+      <StackVisualization stack={currentStep?.stack || []} />
+
       {currentStep?.currentArea !== undefined && (
         <div className={styles.areaDisplay}>
           当前面积: <span className={styles.areaValue}>{currentStep.currentArea}</span>

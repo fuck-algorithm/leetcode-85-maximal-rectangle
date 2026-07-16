@@ -44,61 +44,6 @@
   cursor: grabbing;
 }
 
-.stackPanel {
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
-  background: white;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 8px;
-  min-width: 80px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.stackTitle {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-color);
-  text-align: center;
-  margin-bottom: 8px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.stackContent {
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 4px;
-}
-
-.stackItem {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 4px 8px;
-  background: #e6f7ff;
-  border: 1px solid #91d5ff;
-  border-radius: 4px;
-  font-size: 11px;
-}
-
-.stackIndex {
-  font-weight: 600;
-  color: var(--primary-color);
-}
-
-.stackHeight {
-  color: var(--text-secondary);
-}
-
-.stackBottom {
-  font-size: 10px;
-  color: #999;
-  text-align: center;
-  margin-top: 4px;
-}
-
 .areaDisplay {
   position: absolute;
   left: 16px;
