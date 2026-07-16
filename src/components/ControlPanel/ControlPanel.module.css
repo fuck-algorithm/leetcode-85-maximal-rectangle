@@ -32,6 +32,7 @@
 .controls {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   margin-bottom: 12px;
 }
@@ -80,7 +81,6 @@
 
 .speedControl {
   position: relative;
-  margin-left: auto;
 }
 
 .speedBtn {
