@@ -27,3 +27,43 @@
   flex-direction: column;
   min-width: 0;
 }
+
+.solverBar {
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+
+.solverBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: #f5f5f5;
+  color: var(--text-color);
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.solverBtn:hover {
+  background: #e8e8e8;
+}
+
+.solverActive {
+  background: var(--primary-color);
+  color: white;
+}
+
+.complexity {
+  font-size: 11px;
+  opacity: 0.8;
+  font-family: 'SFMono-Regular', Consolas, monospace;
+}
