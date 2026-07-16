@@ -8,6 +8,7 @@ export function generateAlgorithmSteps(heights: number[]): AlgorithmStep[] {
   if (n === 0) {
     steps.push({
       id: 0,
+      algorithmId: 'monotonic-stack',
       description: '输入数组为空，最大面积为 0',
       codeLines: { java: [1], python: [1], golang: [1], javascript: [1] },
       stack: [],
@@ -31,6 +32,7 @@ export function generateAlgorithmSteps(heights: number[]): AlgorithmStep[] {
   // 初始化步骤
   steps.push({
     id: stepId++,
+    algorithmId: 'monotonic-stack',
     description: `初始化：数组长度 n = ${n}，创建左边界数组 left 和右边界数组 right，初始化单调栈`,
     codeLines: { java: [3, 4, 5], python: [2, 3], golang: [2, 3, 4], javascript: [2, 3, 4] },
     stack: [],
@@ -57,6 +59,7 @@ export function generateAlgorithmSteps(heights: number[]): AlgorithmStep[] {
     // 开始处理当前柱子
     steps.push({
       id: stepId++,
+    algorithmId: 'monotonic-stack',
       description: `遍历到索引 i = ${i}，当前柱子高度 heights[${i}] = ${currentHeight}`,
       codeLines: { java: [7], python: [5], golang: [6], javascript: [6] },
       stack: stack.map(s => ({ ...s })),
@@ -82,6 +85,7 @@ export function generateAlgorithmSteps(heights: number[]): AlgorithmStep[] {
       
       steps.push({
         id: stepId++,
+    algorithmId: 'monotonic-stack',
         description: `栈顶元素 heights[${top.index}] = ${top.height} >= ${currentHeight}，弹出栈顶，设置 right[${top.index}] = ${i}`,
         codeLines: { java: [8, 9, 10], python: [6, 7], golang: [7, 8, 9], javascript: [7, 8, 9] },
         stack: stack.map(s => ({ ...s })),
@@ -132,6 +136,7 @@ export function generateAlgorithmSteps(heights: number[]): AlgorithmStep[] {
 
     steps.push({
       id: stepId++,
+    algorithmId: 'monotonic-stack',
       description: leftBound === -1 
         ? `栈为空，left[${i}] = -1（左边没有更小的柱子）`
         : `栈顶索引为 ${leftBound}，设置 left[${i}] = ${leftBound}`,
@@ -168,6 +173,7 @@ export function generateAlgorithmSteps(heights: number[]): AlgorithmStep[] {
 
     steps.push({
       id: stepId++,
+    algorithmId: 'monotonic-stack',
       description: `将索引 ${i}（高度 ${currentHeight}）入栈`,
       codeLines: { java: [12], python: [9], golang: [11], javascript: [11] },
       stack: stack.map(s => ({ ...s })),
@@ -197,6 +203,7 @@ export function generateAlgorithmSteps(heights: number[]): AlgorithmStep[] {
   // 计算最大面积
   steps.push({
     id: stepId++,
+    algorithmId: 'monotonic-stack',
     description: '遍历完成，开始计算每个柱子能形成的最大矩形面积',
     codeLines: { java: [14], python: [11], golang: [13], javascript: [13] },
     stack: [],
@@ -222,6 +229,7 @@ export function generateAlgorithmSteps(heights: number[]): AlgorithmStep[] {
 
     steps.push({
       id: stepId++,
+    algorithmId: 'monotonic-stack',
       description: `计算柱子 ${i}：宽度 = right[${i}] - left[${i}] - 1 = ${right[i]} - ${left[i]} - 1 = ${width}，面积 = ${width} × ${heights[i]} = ${area}${area > prevMaxArea ? `，更新最大面积为 ${maxArea}` : ''}`,
       codeLines: { java: [15, 16], python: [12], golang: [14, 15], javascript: [14, 15] },
       stack: [],
@@ -259,6 +267,7 @@ export function generateAlgorithmSteps(heights: number[]): AlgorithmStep[] {
   // 最终结果
   steps.push({
     id: stepId++,
+    algorithmId: 'monotonic-stack',
     description: `算法结束，最大矩形面积为 ${maxArea}`,
     codeLines: { java: [17], python: [13], golang: [16], javascript: [16] },
     stack: [],
