@@ -1,51 +1,66 @@
 import { useState, useEffect } from 'react';
 import { getGitHubStars, GITHUB_REPO_URL } from '../../utils/github';
 import { algorithmThought } from '../../algorithm/codeData';
+import { AlgorithmId } from '../../types';
+import { ProblemDescriptionModal } from './ProblemDescriptionModal';
 import styles from './Header.module.css';
 
-const LEETCODE_URL = 'https://leetcode.cn/problems/largest-rectangle-in-histogram/';
+const LEETCODE_URL = 'https://leetcode.cn/problems/maximal-rectangle/';
 const HOT100_URL = 'https://fuck-algorithm.github.io/leetcode-hot-100/';
 
-export function Header() {
+interface HeaderProps {
+  algorithmId: AlgorithmId;
+}
+
+export function Header({ algorithmId }: HeaderProps) {
   const [stars, setStars] = useState<number>(0);
+  const [showProblem, setShowProblem] = useState(false);
   const [showThought, setShowThought] = useState(false);
 
   useEffect(() => {
     getGitHubStars().then(setStars);
   }, []);
 
+  const thought = algorithmThought[algorithmId] || '';
+
   return (
     <header className={styles.header}>
       <div className={styles.left}>
-        <a 
-          href={HOT100_URL} 
-          target="_blank" 
+        <a
+          href={HOT100_URL}
+          target="_blank"
           rel="noopener noreferrer"
           className={styles.backLink}
         >
           ← 返回 LeetCode Hot 100
         </a>
       </div>
-      
+
       <div className={styles.center}>
-        <a 
+        <a
           href={LEETCODE_URL}
           target="_blank"
           rel="noopener noreferrer"
           className={styles.title}
         >
-          84. 柱状图中最大的矩形
+          85. 最大矩形
         </a>
       </div>
-      
+
       <div className={styles.right}>
-        <button 
+        <button
+          className={styles.thoughtBtn}
+          onClick={() => setShowProblem(true)}
+        >
+          📋 题目描述
+        </button>
+        <button
           className={styles.thoughtBtn}
           onClick={() => setShowThought(true)}
         >
           💡 算法思路
         </button>
-        
+
         <a
           href={GITHUB_REPO_URL}
           target="_blank"
@@ -60,12 +75,14 @@ export function Header() {
         </a>
       </div>
 
+      {showProblem && <ProblemDescriptionModal onClose={() => setShowProblem(false)} />}
+
       {showThought && (
         <div className={styles.modal} onClick={() => setShowThought(false)}>
           <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
             <button className={styles.closeBtn} onClick={() => setShowThought(false)}>×</button>
             <div className={styles.thoughtContent}>
-              {algorithmThought.split('\n').map((line, i) => {
+              {thought.split('\n').map((line, i) => {
                 if (line.startsWith('## ')) {
                   return <h2 key={i}>{line.slice(3)}</h2>;
                 }
