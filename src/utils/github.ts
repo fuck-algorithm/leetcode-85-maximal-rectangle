@@ -1,5 +1,8 @@
 import { getCache, setCache, getCacheEvenExpired } from './storage';
 
+// 仓库指向 84（柱状图最大矩形）母仓：85 的可视化项目从 84 派生，
+// GitHub stars 计数统一归 84 母仓，故此处用 84 而非 85。
+// 84 仓库已设为 public，链接与 stars API 均可正常访问。
 const REPO_OWNER = 'fuck-algorithm';
 const REPO_NAME = 'leetcode-84-largest-rectangle-in-histogram';
 const CACHE_KEY = 'github-stars';
