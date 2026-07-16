@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Highlight, themes } from 'prism-react-renderer';
-import { Language, AlgorithmStep } from '../../types';
-import { algorithmCodes } from '../../algorithm/codeData';
+import { Language, AlgorithmStep, AlgorithmId } from '../../types';
+import { algorithmCodeData } from '../../algorithm/codeData';
 import { saveLanguage, getLanguage } from '../../utils/storage';
+import { DebugPanel } from './DebugPanel';
 import styles from './CodePanel.module.css';
 
 interface CodePanelProps {
   currentStep: AlgorithmStep | null;
+  algorithmId: AlgorithmId;
 }
 
 const LANGUAGE_LABELS: Record<Language, string> = {
@@ -23,7 +25,7 @@ const PRISM_LANGUAGES: Record<Language, string> = {
   javascript: 'javascript',
 };
 
-export function CodePanel({ currentStep }: CodePanelProps) {
+export function CodePanel({ currentStep, algorithmId }: CodePanelProps) {
   const [language, setLanguage] = useState<Language>('java');
 
   useEffect(() => {
@@ -35,26 +37,8 @@ export function CodePanel({ currentStep }: CodePanelProps) {
     await saveLanguage(lang);
   };
 
-  const codeBlock = algorithmCodes[language];
+  const codeBlock = algorithmCodeData[algorithmId][language];
   const highlightLines = currentStep?.codeLines[language] || [];
-  const variables = currentStep?.variables || {};
-
-  // 获取每行应该显示的变量
-  const getLineVariables = (lineNum: number): string | null => {
-    if (!highlightLines.includes(lineNum)) return null;
-    
-    const varEntries = Object.entries(variables);
-    if (varEntries.length === 0) return null;
-    
-    // 只在高亮行的最后一行显示变量
-    if (lineNum !== Math.max(...highlightLines)) return null;
-    
-    return varEntries
-      .filter(([key]) => !key.includes('[') || key.includes('heights[i]') || key.includes('left[i]') || key.includes('right[i]'))
-      .slice(0, 4)
-      .map(([key, value]) => `${key}=${value}`)
-      .join(', ');
-  };
 
   return (
     <div className={styles.container}>
@@ -72,10 +56,10 @@ export function CodePanel({ currentStep }: CodePanelProps) {
           ))}
         </div>
       </div>
-      
+
       <div className={styles.codeWrapper}>
         <Highlight
-          theme={themes.oneDark}
+          theme={themes.vsDark}
           code={codeBlock.code}
           language={PRISM_LANGUAGES[language]}
         >
@@ -84,8 +68,7 @@ export function CodePanel({ currentStep }: CodePanelProps) {
               {tokens.map((line, i) => {
                 const lineNum = i + 1;
                 const isHighlighted = highlightLines.includes(lineNum);
-                const lineVars = getLineVariables(lineNum);
-                
+
                 return (
                   <div
                     key={i}
@@ -98,11 +81,6 @@ export function CodePanel({ currentStep }: CodePanelProps) {
                         <span key={key} {...getTokenProps({ token })} />
                       ))}
                     </span>
-                    {lineVars && (
-                      <span className={styles.lineVars}>
-                        // {lineVars}
-                      </span>
-                    )}
                   </div>
                 );
               })}
@@ -110,6 +88,8 @@ export function CodePanel({ currentStep }: CodePanelProps) {
           )}
         </Highlight>
       </div>
+
+      <DebugPanel currentStep={currentStep} />
     </div>
   );
 }

@@ -85,10 +85,3 @@
   flex: 1;
   white-space: pre;
 }
-
-.lineVars {
-  margin-left: 16px;
-  color: #7c8594;
-  font-style: italic;
-  white-space: nowrap;
-}
