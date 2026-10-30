@@ -25,5 +25,8 @@ dist-ssr
 
 # Build outputs
 build
+coverage
+playwright-report
+test-results
 .cache
 *.tsbuildinfo

@@ -13,7 +13,8 @@ export function DataInput({ onDataChange, currentData }: DataInputProps) {
 
   const handleInputChange = (value: string) => {
     setInputValue(value);
-    setError(null);
+    const result = validateInput(value);
+    setError(result.valid ? null : result.error || '输入无效');
   };
 
   const handleApply = () => {
@@ -46,12 +47,13 @@ export function DataInput({ onDataChange, currentData }: DataInputProps) {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-testid="data-input-bar">
       <div className={styles.inputRow}>
         <span className={styles.label}>heights =</span>
         <input
           type="text"
           className={styles.input}
+          data-testid="algo-input"
           value={inputValue}
           onChange={e => handleInputChange(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -60,18 +62,19 @@ export function DataInput({ onDataChange, currentData }: DataInputProps) {
         <button className={styles.applyBtn} onClick={handleApply}>
           应用
         </button>
-        <button className={styles.randomBtn} onClick={handleRandom}>
+        <button className={styles.randomBtn} data-testid="random-input-btn" onClick={handleRandom}>
           🎲 随机
         </button>
       </div>
       
-      {error && <div className={styles.error}>{error}</div>}
+      {error && <div className={styles.error} data-testid="input-error">{error}</div>}
       
       <div className={styles.presets}>
         <span className={styles.presetLabel}>示例：</span>
         {PRESET_EXAMPLES.map((example, index) => (
           <button
             key={index}
+            data-testid={`sample-s${index + 1}`}
             className={`${styles.presetBtn} ${
               JSON.stringify(currentData) === JSON.stringify(example.value) ? styles.active : ''
             }`}

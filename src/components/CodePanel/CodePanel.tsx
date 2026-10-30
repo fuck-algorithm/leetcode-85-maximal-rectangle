@@ -41,7 +41,7 @@ export function CodePanel({ currentStep, algorithmId }: CodePanelProps) {
   const highlightLines = currentStep?.codeLines[language] || [];
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-testid="code-panel">
       <div className={styles.header}>
         <span className={styles.title}>算法代码</span>
         <div className={styles.tabs}>
@@ -49,6 +49,7 @@ export function CodePanel({ currentStep, algorithmId }: CodePanelProps) {
             <button
               key={lang}
               className={`${styles.tab} ${language === lang ? styles.active : ''}`}
+              data-testid={`language-${lang === 'golang' ? 'go' : lang}`}
               onClick={() => handleLanguageChange(lang)}
             >
               {LANGUAGE_LABELS[lang]}
@@ -73,7 +74,7 @@ export function CodePanel({ currentStep, algorithmId }: CodePanelProps) {
                   <div
                     key={i}
                     {...getLineProps({ line })}
-                    className={`${styles.line} ${isHighlighted ? styles.highlighted : ''}`}
+                    className={`${styles.line} code-line ${isHighlighted ? `${styles.highlighted} active` : ''}`}
                   >
                     <span className={styles.lineNumber}>{lineNum}</span>
                     <span className={styles.lineContent}>

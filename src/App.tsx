@@ -13,6 +13,11 @@ function App() {
   const [speed, setSpeed] = useState(1);
   const playIntervalRef = useRef<number | null>(null);
 
+  useEffect(() => {
+    const savedSpeed = Number(localStorage.getItem('playback-speed'));
+    if ([0.5, 0.75, 1, 1.25, 1.5, 2].includes(savedSpeed)) setSpeed(savedSpeed);
+  }, []);
+
   // 生成算法步骤（数据或解法变化时重新生成）
   useEffect(() => {
     const solver = getSolver(algorithmId);
@@ -82,14 +87,15 @@ function App() {
   const currentStepData = steps[currentStep] || null;
 
   return (
-    <div className={styles.app}>
+    <div className={styles.app} data-testid="app-root">
       <Header algorithmId={algorithmId} />
       <DataInput onDataChange={handleDataChange} currentData={heights} />
 
-      <div className={styles.solverBar}>
+      <div className={styles.solverBar} data-testid="solution-tabs">
         {ALGORITHM_LIST.map(meta => (
           <button
             key={meta.id}
+            data-testid={`solution-tab-${meta.id}`}
             className={`${styles.solverBtn} ${algorithmId === meta.id ? styles.solverActive : ''}`}
             onClick={() => handleAlgorithmChange(meta.id)}
             title={meta.description}
@@ -105,7 +111,7 @@ function App() {
         </div>
 
         <div className={styles.rightPanel}>
-          <Canvas heights={heights} currentStep={currentStepData} />
+          <Canvas heights={heights} currentStep={currentStepData} totalSteps={steps.length} />
         </div>
       </div>
 
@@ -118,7 +124,6 @@ function App() {
         onReset={handleReset}
         speed={speed}
         onSpeedChange={handleSpeedChange}
-        stepDescription={currentStepData?.description || ''}
       />
 
       <WeChatFloat />

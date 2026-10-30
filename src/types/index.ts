@@ -12,9 +12,14 @@ export interface StackFrame {
 }
 
 // 算法步骤类型
+export type StepOperation = 'init' | 'read' | 'compare' | 'move' | 'insert' | 'remove' | 'push' | 'pop' | 'done';
+
 export interface AlgorithmStep {
   id: number;
   description: string;
+  operation?: StepOperation;
+  narration?: string;
+  anchorIds?: string[];
   // 解法标识（可选，旧步骤无此字段时由消费方处理）
   algorithmId?: AlgorithmId;
   // 各语言对应的代码行号

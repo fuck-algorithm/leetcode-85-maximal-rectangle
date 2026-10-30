@@ -3,15 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - 'docs/**'
-      - '*.md'
-      - 'LICENSE'
   pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - '*.md'
-      - 'LICENSE'
   workflow_dispatch:
 
 permissions:
@@ -38,6 +30,21 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Unit coverage
+        run: npm run test:coverage
+
+      - name: E2E acceptance
+        run: npm run test:e2e
 
       - name: Build
         run: npm run build
