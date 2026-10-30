@@ -1,5 +1,5 @@
 .container {
-  padding: 8px 16px;
+  padding: 4px 12px;
   background: var(--card-bg);
   border-bottom: 1px solid var(--border-color);
 }
@@ -20,7 +20,7 @@
 .input {
   flex: 1;
   max-width: 400px;
-  padding: 6px 12px;
+  padding: 4px 8px;
   border: 1px solid var(--border-color);
   border-radius: 4px;
   font-family: 'Consolas', 'Monaco', monospace;
@@ -33,7 +33,7 @@
 }
 
 .applyBtn {
-  padding: 6px 16px;
+  padding: 4px 12px;
   background: var(--primary-color);
   color: white;
   border-radius: 4px;
@@ -68,7 +68,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-top: 8px;
+  margin-top: 0;
 }
 
 .presetLabel {

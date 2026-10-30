@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 16px;
+  padding: 0 12px;
   background: var(--card-bg);
   border-bottom: 1px solid var(--border-color);
   height: 48px;
@@ -29,8 +29,11 @@
 }
 
 .title {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: var(--text-color);
   transition: color 0.2s;
 }

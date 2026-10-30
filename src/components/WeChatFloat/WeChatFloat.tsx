@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styles from './WeChatFloat.module.css';
 
-const WECHAT_QR_URL = 'https://cdn.jsdelivr.net/gh/JSREI/.github/profile/README.assets/image-20231030132026541-7614065.png';
+const WECHAT_QR_URL = `${import.meta.env.BASE_URL}assets/qrcode-community.png`;
 
 export function WeChatFloat() {
   const [showQR, setShowQR] = useState(false);
@@ -9,6 +9,7 @@ export function WeChatFloat() {
   return (
     <div 
       className={styles.container}
+      data-testid="community-btn"
       onMouseEnter={() => setShowQR(true)}
       onMouseLeave={() => setShowQR(false)}
     >
@@ -20,12 +21,13 @@ export function WeChatFloat() {
       </div>
       
       {showQR && (
-        <div className={styles.qrPanel}>
+        <div className={styles.qrPanel} data-testid="community-pop">
           <div className={styles.qrTitle}>微信扫码发送 "leetcode"</div>
           <div className={styles.qrSubtitle}>加入算法交流群</div>
           <img 
             src={WECHAT_QR_URL} 
-            alt="微信二维码" 
+            alt="微信二维码"
+            data-testid="community-qr"
             className={styles.qrImage}
           />
         </div>

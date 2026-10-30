@@ -8,6 +8,7 @@ import styles from './Canvas.module.css';
 interface CanvasProps {
   heights: number[];
   currentStep: AlgorithmStep | null;
+  totalSteps: number;
 }
 
 interface Transform {
@@ -16,11 +17,29 @@ interface Transform {
   scale: number;
 }
 
-export function Canvas({ heights, currentStep }: CanvasProps) {
+export function Canvas({ heights, currentStep, totalSteps }: CanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 400 });
   const [transform, setTransform] = useState<Transform>({ x: 0, y: 0, scale: 1 });
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [canvasFrame, setCanvasFrame] = useState(0);
+
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setReducedMotion(query.matches);
+    update();
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
+
+  useEffect(() => {
+    if (reducedMotion || !currentStep) return;
+    const timer = window.setTimeout(() => {
+      setCanvasFrame(currentStep.id + 1);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [currentStep, reducedMotion]);
 
   // 监听容器大小变化
   useEffect(() => {
@@ -65,13 +84,13 @@ export function Canvas({ heights, currentStep }: CanvasProps) {
 
     d3.select(svg)
       .transition()
-      .duration(300)
+      .duration(reducedMotion ? 0 : 300)
       .call(
         d3.zoom<SVGSVGElement, unknown>().transform,
         d3.zoomIdentity
       );
     setTransform({ x: 0, y: 0, scale: 1 });
-  }, []);
+  }, [reducedMotion]);
 
   // 计算布局参数
   const margin = { top: 60, right: 40, bottom: 120, left: 40 };
@@ -92,21 +111,21 @@ export function Canvas({ heights, currentStep }: CanvasProps) {
 
   // 获取柱子颜色
   const getBarColor = (index: number): string => {
-    if (!currentStep) return '#1890ff';
+    if (!currentStep) return '#d9e7e2';
 
     if (currentStep.highlightRect) {
       const { left, right } = currentStep.highlightRect;
       if (index >= left && index <= right) {
-        return '#52c41a';
+        return '#18765a';
       }
     }
 
     if (currentStep.highlightBars.includes(index)) {
-      return '#faad14';
+      return currentStep.currentIndex === index ? '#2f9e7d' : '#e8b04b';
     }
 
     if (currentStep.stack.some(s => s.index === index)) {
-      return '#1890ff';
+      return '#9ad3c2';
     }
 
     return '#91caff';
@@ -116,7 +135,24 @@ export function Canvas({ heights, currentStep }: CanvasProps) {
   const arrowColor = currentStep?.annotations.find(a => a.type === 'arrow')?.color || '#666';
 
   return (
-    <div className={styles.container} ref={containerRef}>
+    <div className={styles.container} ref={containerRef} data-testid="visualization-canvas">
+      <div className={styles.teachingLayer} aria-live="polite">
+        <div className={styles.teachingHeader}>
+          <span className={styles.stepTitle}>Step {currentStep ? currentStep.id + 1 : 1}/{totalSteps} · 步骤 {currentStep ? currentStep.id + 1 : 1}</span>
+          <span className={styles.operationBadge} data-testid="operation-badge" data-operation={currentStep?.operation ?? 'init'}>
+            {currentStep?.operation ?? 'init'}
+          </span>
+        </div>
+        <p className={styles.narration} data-testid="step-narration">
+          {currentStep?.narration ?? '读取柱状图并开始寻找最大矩形。'}
+        </p>
+        <div className={styles.legend} aria-label="状态图例" data-testid="canvas-legend">
+          <span><i className={styles.currentKey} />当前柱</span>
+          <span><i className={styles.compareKey} />比较/候选</span>
+          <span><i className={styles.visitedKey} />已确认</span>
+          <span><i className={styles.idleKey} />未处理</span>
+        </div>
+      </div>
       <div className={styles.toolbar}>
         <button className={styles.resetBtn} onClick={resetView}>
           重置视图
@@ -129,6 +165,8 @@ export function Canvas({ heights, currentStep }: CanvasProps) {
         width={dimensions.width}
         height={dimensions.height}
         className={styles.svg}
+        data-testid="canvas-svg"
+        data-frame={canvasFrame}
       >
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto">
@@ -146,11 +184,16 @@ export function Canvas({ heights, currentStep }: CanvasProps) {
             return (
               <g key={index}>
                 <rect
+                  data-node-id={`bar-${index}`}
+                  data-status={currentStep && (currentStep.currentIndex >= 0 ? currentStep.currentIndex : currentStep.highlightBars[0] ?? 0) === index ? 'current' : currentStep?.highlightBars.includes(index) ? 'compare' : currentStep?.stack.some(item => item.index === index) ? 'visited' : 'idle'}
+                  className="canvas-node"
+                  data-animate={currentStep && canvasFrame === currentStep.id + 1 ? 'true' : 'false'}
                   x={x}
                   y={y}
                   width={barWidth}
                   height={barHeight}
                   fill={color}
+                  style={{ transition: reducedMotion ? 'none' : 'fill 240ms ease, x 360ms ease, y 360ms ease, height 360ms ease' }}
                   stroke="#fff"
                   strokeWidth={1}
                   rx={2}
@@ -204,6 +247,7 @@ export function Canvas({ heights, currentStep }: CanvasProps) {
       </svg>
 
       <StackVisualization stack={currentStep?.stack || []} />
+      <span className={styles.inputEcho} data-testid="canvas-input-echo">heights = [{heights.join(', ')}]</span>
 
       {currentStep?.currentArea !== undefined && (
         <div className={styles.areaDisplay}>

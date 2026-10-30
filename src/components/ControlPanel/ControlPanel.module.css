@@ -1,14 +1,20 @@
 .container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 5px 12px;
+  flex-shrink: 0;
   background: var(--card-bg);
-  border-radius: 8px;
-  padding: 12px 16px;
+  border-top: 1px solid var(--border-color);
 }
 
 .description {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 8px;
+  min-width: 72px;
+  margin: 0;
 }
 
 .stepNum {
@@ -32,16 +38,17 @@
 .controls {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 0;
+  flex-shrink: 0;
 }
 
 .btn {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 14px;
+  padding: 6px 8px;
   background: #f5f5f5;
   color: var(--text-color);
   border-radius: 6px;
@@ -84,7 +91,7 @@
 }
 
 .speedBtn {
-  padding: 8px 12px;
+  padding: 6px 8px;
   background: #f5f5f5;
   color: var(--text-color);
   border-radius: 6px;
@@ -130,6 +137,8 @@
 }
 
 .progressBar {
+  flex: 1;
+  min-width: 80px;
   position: relative;
   height: 8px;
   background: #e8e8e8;

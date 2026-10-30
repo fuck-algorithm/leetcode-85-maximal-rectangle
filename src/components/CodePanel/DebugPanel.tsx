@@ -11,7 +11,7 @@ export function DebugPanel({ currentStep }: DebugPanelProps) {
   const varEntries = Object.entries(variables);
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-testid="variable-watch">
       <div className={styles.section}>
         <div className={styles.sectionTitle}>变量</div>
         {varEntries.length === 0 ? (
