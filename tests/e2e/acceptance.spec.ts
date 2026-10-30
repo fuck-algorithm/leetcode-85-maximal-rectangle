@@ -161,6 +161,9 @@ test.describe('Algorithm Visualization Acceptance', () => {
     const narrationBefore = await narration.innerText();
     const operationBefore = await operation.getAttribute('data-operation');
     expect(activeBefore).toBeGreaterThan(0);
+    expect(await page.locator('[data-testid="code-panel"] [data-testid="language-java"]').getAttribute('class')).toMatch(/active/);
+    expect(await page.locator('.token.keyword').count()).toBeGreaterThan(0);
+    expect(await page.locator('.token.number').count()).toBeGreaterThan(0);
     expect(watchBefore.trim().length).toBeGreaterThan(0);
     expect(narrationBefore.trim().length).toBeGreaterThan(0);
     expect(operationBefore).toBeTruthy();

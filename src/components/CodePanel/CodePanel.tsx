@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Highlight, themes } from 'prism-react-renderer';
+import { loadAdditionalLanguages } from './languageRegistry';
 import { Language, AlgorithmStep, AlgorithmId } from '../../types';
 import { algorithmCodeData } from '../../algorithm/codeData';
 import { saveLanguage, getLanguage } from '../../utils/storage';
@@ -27,9 +28,16 @@ const PRISM_LANGUAGES: Record<Language, string> = {
 
 export function CodePanel({ currentStep, algorithmId }: CodePanelProps) {
   const [language, setLanguage] = useState<Language>('java');
+  const [languagesReady, setLanguagesReady] = useState(false);
 
   useEffect(() => {
-    getLanguage().then(setLanguage);
+    let cancelled = false;
+    Promise.all([getLanguage(), loadAdditionalLanguages()]).then(([savedLanguage]) => {
+      if (cancelled) return;
+      setLanguage(savedLanguage);
+      setLanguagesReady(true);
+    });
+    return () => { cancelled = true; };
   }, []);
 
   const handleLanguageChange = async (lang: Language) => {
@@ -61,7 +69,7 @@ export function CodePanel({ currentStep, algorithmId }: CodePanelProps) {
       <div className={styles.codeWrapper}>
         <Highlight
           theme={themes.vsDark}
-          code={codeBlock.code}
+          code={languagesReady ? codeBlock.code : ''}
           language={PRISM_LANGUAGES[language]}
         >
           {({ style, tokens, getLineProps, getTokenProps }) => (
