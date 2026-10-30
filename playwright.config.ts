@@ -16,7 +16,7 @@ export default defineConfig({
     video: 'retain-on-failure'
   },
   webServer: {
-    command: `VITE_APP_BASE=/ npm run dev -- --port ${PLAYWRIGHT_PORT} --strictPort`,
+    command: `VITE_APP_BASE=/ npm run dev -- --host 127.0.0.1 --port ${PLAYWRIGHT_PORT} --strictPort`,
     url: BASE_URL,
     reuseExistingServer: true,
     timeout: 180_000
